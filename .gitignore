@@ -23,3 +23,5 @@
 hs_err_pid*
 replay_pid*
 /Proyecto_SistemaAlquilerVehiculos/nbproject/private/
+/Proyecto_SistemaAlquilerVehiculos/build/
+/Proyecto_SistemaAlquilerVehiculos/dist/
