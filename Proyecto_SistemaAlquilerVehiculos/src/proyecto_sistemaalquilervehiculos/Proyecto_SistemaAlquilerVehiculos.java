@@ -4,6 +4,8 @@
  */
 package proyecto_sistemaalquilervehiculos;
 
+import java.util.Scanner;
+
 /**
  *
  * @author cmu08_12mttuz
@@ -15,6 +17,10 @@ public class Proyecto_SistemaAlquilerVehiculos {
      */
     public static void main(String[] args) {
         // INICIO DEL PROYECTO
+        Scanner input = new Scanner(System.in);
+        
+        //Declaracion de variables
+        
         
     
     }
