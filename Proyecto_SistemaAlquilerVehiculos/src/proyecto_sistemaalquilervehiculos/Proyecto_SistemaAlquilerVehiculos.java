@@ -55,15 +55,15 @@ public class Proyecto_SistemaAlquilerVehiculos {
             switch (eleccion) {
                 case 1:
                     //SECCION REGISTRO DE CLIENTE
-                    
+
                     cantidadClientes = registrarCliente(input, cliente, edad, identidad, licencia, cantidadClientes, capacidadMaxClientes);
-                    
+
                     break;
                 case 2:
                     //SECCION CONSULTA DE CLIENTE
-                    
+
                     consultarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
-                    
+
                     break;
                 case 3:
                     //SECCION DE ALQUILER DE VEHICULO
@@ -95,6 +95,12 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 case 4:
+
+                    break;
+                case 5:
+
+                    break;
+                case 6:
 
                     break;
                 default:
