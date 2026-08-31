@@ -28,8 +28,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String respuestaRegistro = "";
         int eleccion = 0;
         int cantidadClientes = 0;
-        int capacidadMaxClientes = 10;
-        String valorBuscado = "0";
+        int capacidadMaxClientes = 10;        
 
         do {
 
@@ -57,43 +56,13 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 case 1:
                     //SECCION REGISTRO DE CLIENTE
                     
-                    cantidadClientes = registrarCliente(input,
-                            cliente,
-                            edad,
-                            identidad,
-                            licencia,
-                            cantidadClientes,
-                            capacidadMaxClientes);                    
+                    cantidadClientes = registrarCliente(input, cliente, edad, identidad, licencia, cantidadClientes, capacidadMaxClientes);
                     
                     break;
                 case 2:
                     //SECCION CONSULTA DE CLIENTE
-                    System.out.println("== CONSULTA DE CLIENTES ==");
-                    System.out.println(""); 
                     
-                    if (cantidadClientes == 0) {
-                        System.out.println("NO hay clientes registrados\n");
-                    } else {
-                        System.out.print("Ingrese el numero de identidad del cliente: ");
-                        valorBuscado = input.nextLine();
-                        for (int i = 0; i < cantidadClientes; i++) {
-                            if (cantidadClientes > 0) {
-                                if (valorBuscado.equals(identidad[i])) {
-                                    System.out.println("Nombre del cliente: " + cliente[i]);
-                                    System.out.println("edad del cliente: " + edad[i]);
-                                    System.out.println("identidad del cliente: " + identidad[i]);
-                                    System.out.println("licencia del cliente: " + licencia[i]);
-                                    System.out.println();
-                                    break;
-                                }
-                            } else {
-                                System.out.println("No se encuentra registro del cliente");
-                                break;
-                            }//Fin if/else
-
-                        }//fin For
-                    }//Fin if/else
-                    
+                    consultarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
                     
                     break;
                 case 3:
@@ -188,5 +157,41 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
     return cantidadClientes;
 }//FIn Funcion registrarCliente
+    
+    public static void consultarCliente(
+            Scanner input,
+            String[] cliente,
+            int[] edad,
+            String[] identidad,
+            String[] licencia,
+            int cantidadClientes) {
+        System.out.println("== CONSULTA DE CLIENTES ==");
+        System.out.println("");
 
+        String valorBuscado;
+        boolean valorEncontrado = false;
+
+        if (cantidadClientes == 0) {
+            System.out.println("NO hay clientes registrados\n");
+        } else {
+            System.out.print("Ingrese el numero de identidad del cliente: ");
+            valorBuscado = input.nextLine();
+            for (int i = 0; i < cantidadClientes; i++) {
+                if (valorBuscado.equals(identidad[i])) {
+                    System.out.println("Nombre del cliente: " + cliente[i]);
+                    System.out.println("edad del cliente: " + edad[i]);
+                    System.out.println("identidad del cliente: " + identidad[i]);
+                    System.out.println("licencia del cliente: " + licencia[i]);
+                    System.out.println();
+                    valorEncontrado = true;
+                    break;
+                }//Fin if 
+            }//Fin For
+
+            if (valorEncontrado == false) {
+                System.out.println("No se encuentra registro del cliente");
+
+            }//Fin If
+        }//Fin if/else
+    }//Fin Funcion consultarCliente
 }//Fin Class
