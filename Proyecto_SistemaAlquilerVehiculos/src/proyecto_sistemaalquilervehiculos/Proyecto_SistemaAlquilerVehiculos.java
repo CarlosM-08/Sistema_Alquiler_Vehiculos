@@ -28,8 +28,9 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String respuestaRegistro = "";
         int eleccion = 0;
         int cantidadClientes = 0;
-        int capacidadMaxClientes = 10;        
-
+        int capacidadMaxClientes = 10;  
+        
+        
         do {
 
             //MENU PRINCIPAL        
@@ -67,6 +68,16 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     break;
                 case 3:
                     //SECCION DE ALQUILER DE VEHICULO
+                    
+                    int posicionCliente;
+                    
+                    posicionCliente = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes); 
+                    
+                    /*if (clienteActivo == false) {
+                        System.out.println("No se encuentra registro del cliente");                        
+                    }else{
+                    
+                    
                     System.out.println("""
                            Seleccione el tipo de vehiculo que desea alquilar
                            1. Economico
@@ -92,6 +103,9 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             break;
                         default:
                     }//Fin Switch
+                    }//Fin If/Else
+                    
+                    */
 
                     break;
                 case 4:
@@ -173,7 +187,10 @@ public class Proyecto_SistemaAlquilerVehiculos {
             int cantidadClientes) {
         System.out.println("== CONSULTA DE CLIENTES ==");
         System.out.println("");
-
+        int posicion;
+        
+        posicion = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
+        
         String valorBuscado;
         boolean valorEncontrado = false;
 
@@ -199,5 +216,38 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
             }//Fin If
         }//Fin if/else
+    }//Fin Funcion consultarCliente
+    
+     public static int buscarCliente(
+            Scanner input,
+            String[] cliente,
+            int[] edad,
+            String[] identidad,
+            String[] licencia,
+            int cantidadClientes) {
+        
+        String valorBuscado;
+        boolean valorEncontrado = false;
+        int posicionCliente = -1;
+
+        if (cantidadClientes == 0) {
+            System.out.println("NO hay clientes registrados\n");
+        } else {
+            System.out.print("Ingrese el numero de identidad del cliente: ");
+            valorBuscado = input.nextLine();
+            for (int i = 0; i < cantidadClientes; i++) {
+                if (valorBuscado.equals(identidad[i])) {                    
+                    valorEncontrado = true;
+                    posicionCliente = i;
+                    break;
+                }//Fin if 
+            }//Fin For
+
+            if (valorEncontrado == false) {
+                System.out.println("No se encuentra registro del cliente");
+
+            }//Fin If
+        }//Fin if/else
+        return posicionCliente;        
     }//Fin Funcion consultarCliente
 }//Fin Class
