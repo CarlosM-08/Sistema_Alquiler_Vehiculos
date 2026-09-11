@@ -24,7 +24,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         int[] edad = new int[10];
         String[] identidad = new String[10];
         String[] licencia = new String[10];
-        int respuestaTipoVehiculo = 0;
+        int respuestaCategoriaVehiculo = 0;
         String respuestaRegistro = "";
         int eleccion = 0;
         int cantidadClientes = 0;
@@ -35,6 +35,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
         double[] tarifa = {30, 35, 32, 28, 50, 60, 52, 48, 55, 58, 53, 50};
         boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};
         int seleccionVehiculo = 0;
+        int posicionVehiculo = 0;
+        int dias = 0;
 
         do {
 
@@ -74,22 +76,29 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 case 3:
                     //SECCION DE ALQUILER DE VEHICULO 
                     String categoriaSeleccionada = "No asignada";
+                    double totalPagar = 0;
 
                     posicionCliente = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
                     if (posicionCliente != -1) {
                         System.out.printf("Bienvenido %s\n", cliente[posicionCliente]);
                         System.out.println("""
-                           Seleccione el tipo de vehiculo que desea alquilar
+                           Seleccione la categoria de vehiculo que desea alquilar
                            1. Economico
                            2. SUV
                            3. Pickup
                            """);
-                        System.out.print("Eleccion: ");
-                        respuestaTipoVehiculo = input.nextInt();
-                        System.out.println();
+                        
+                        do {
+                            System.out.print("Eleccion: ");
+                            respuestaCategoriaVehiculo = input.nextInt();
+                            System.out.println();
+                            if (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3) {
+                                System.out.println("Eleccion no valida!!");                                
+                            }                            
+                        } while (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3);  // Asegurar que el usuario ingrese un valor entre 1 y 3                                            
 
-                        switch (respuestaTipoVehiculo) {
+                        switch (respuestaCategoriaVehiculo) {
                             case 1:
                                 categoriaSeleccionada = "Economico";
                                 break;
@@ -109,9 +118,41 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             }  //Fin if                          
                         }//Fin For
 
-                        System.out.println("Seleccione el vehiculo que desea alquilar: ");
+                        System.out.print("\nSeleccione el vehiculo que desea alquilar: ");
                         seleccionVehiculo = input.nextInt();
+                        posicionVehiculo = seleccionVehiculo - 1;
+                        
+                        if (posicionVehiculo >= 0 && posicionVehiculo <= vehiculo.length - 1) {
+                            if (categoria[posicionVehiculo].equals(categoriaSeleccionada) && disponibles[posicionVehiculo] == true) {
+                                System.out.println(vehiculo[posicionVehiculo]);
+                                System.out.println(categoria[posicionVehiculo]);
+                                System.out.println(tarifa[posicionVehiculo]);
+                                
+                                do {
+                                    System.out.print("Cuantos dias desea alquilar el vehiculo: ");
+                                    dias = input.nextInt();
+                                    if (dias<=0) {
+                                        System.out.println("Cantidad de dias no valida");                                        
+                                    }//Fin IF                                    
+                                } while (dias <= 0);//Fin DO/WHILE
+                                
+                                totalPagar = tarifa[posicionVehiculo] * dias;
+                                disponibles[posicionVehiculo] = false;
 
+                                System.out.println("\n\nResumen del alquiler");
+                                System.out.println("=================================");
+                                System.out.printf("Cliente: %s\n", cliente[posicionCliente]);
+                                System.out.printf("Vehiculo seleccionado: %s\n", vehiculo[posicionVehiculo]);
+                                System.out.printf("Cantidad de dias: %d\n", dias);
+                                System.out.printf("Total a pagar: %.2f\n", totalPagar);
+                                System.out.println("=================================\n\n");
+                                
+                            } else {
+                                System.out.println("El vehículo seleccionado no está disponible o no pertenece a la categoría seleccionada");
+                            }//Fin IF/ELSE                            
+                        } else {
+                            System.out.println("Selección de vehículo no válida");
+                        }//Fin IF/ELSE
                     }//Fin If/Else
 
                     break;
@@ -200,8 +241,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         boolean valorEncontrado = false;
         int posicionClienteTem = -1;
 
-        if (cantidadClientes == 0) {
-            System.out.println("");
+        if (cantidadClientes == 0) {            
             System.out.println("=================================");
             System.out.println("|| NO hay clientes registrados ||");
             System.out.println("=================================");
@@ -216,8 +256,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 }//Fin if 
             }//Fin For
 
-            if (valorEncontrado == false) {
-                System.out.println("");
+            if (valorEncontrado == false) {                
                 System.out.println("==========================================");
                 System.out.println("|| No se encuentra registro del cliente ||");
                 System.out.println("==========================================");
@@ -226,5 +265,6 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return posicionClienteTem;
     }//Fin Funcion consultarCliente
     
+        
 
 }//Fin Class
