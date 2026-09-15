@@ -18,33 +18,37 @@ public class Proyecto_SistemaAlquilerVehiculos {
     public static void main(String[] args) {
         // INICIO DEL PROYECTO
         Scanner input = new Scanner(System.in);
+        
+        //Declaracion de variables MENU PRINCIPAL
+        int eleccion = 0;
 
-        //Declaracion de variables
+        //Declaracion de variables para CLIENTES
         String[] cliente = new String[10];
         int[] edad = new int[10];
         String[] identidad = new String[10];
-        String[] licencia = new String[10];
-        int respuestaCategoriaVehiculo = 0;
-        String respuestaRegistro = "";
-        int eleccion = 0;
+        String[] licencia = new String[10];        
         int cantidadClientes = 0;
         int capacidadMaxClientes = 10;
         int posicionCliente;
+        
+        //Declaracion de variables para VEHICULOS
+               
         String[] vehiculo = {"Toyota Corolla", "Honda Civic", "Hyundai Elantra", "Kia Rio", "Toyota RAV4", "Ford Explorer", "Honda CR-V", "Hyundai Tucson", "Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Mitsubishi L200"};
         String[] categoria = {"Economico", "Economico", "Economico", "Economico", "SUV", "SUV", "SUV", "SUV", "Pickup", "Pickup", "Pickup", "Pickup"};
         double[] tarifa = {30, 35, 32, 28, 50, 60, 52, 48, 55, 58, 53, 50};
         boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};
+        int respuestaCategoriaVehiculo = 0;
         int seleccionVehiculo = 0;
         int posicionVehiculo = 0;
-        int dias = 0;
         
-        //variables para los alquileres
+        
+        //variables para los ALQUILERES
+        String[] clientesAlquiler = new String[12];
         String[] vehiculosAlquilados = new String[12];
         int[] diasAlquiler = new int[12];
-        double[] subtotalesAlquiler = new double[12];
-        String[] clientesAlquiler = new String[12];
-
+        double[] subtotalesAlquiler = new double[12];        
         int cantidadAlquileres = 0;
+        int dias = 0;
 
         do {
 
