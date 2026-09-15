@@ -37,6 +37,14 @@ public class Proyecto_SistemaAlquilerVehiculos {
         int seleccionVehiculo = 0;
         int posicionVehiculo = 0;
         int dias = 0;
+        
+        //variables para los alquileres
+        String[] vehiculosAlquilados = new String[12];
+        int[] diasAlquiler = new int[12];
+        double[] subtotalesAlquiler = new double[12];
+        String[] clientesAlquiler = new String[12];
+
+        int cantidadAlquileres = 0;
 
         do {
 
@@ -76,83 +84,122 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 case 3:
                     //SECCION DE ALQUILER DE VEHICULO 
                     String categoriaSeleccionada = "No asignada";
-                    double totalPagar = 0;
+                    double totalPagarCliente = 0;
+                    double subtotalPagar = 0;
+                    String continuar = "NO";
+                    int inicioAlquilerCliente = cantidadAlquileres;
 
                     posicionCliente = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
                     if (posicionCliente != -1) {
                         System.out.printf("Bienvenido %s\n", cliente[posicionCliente]);
-                        System.out.println("""
+                        do {
+                            System.out.println("""
                            Seleccione la categoria de vehiculo que desea alquilar
                            1. Economico
                            2. SUV
                            3. Pickup
                            """);
-                        
-                        do {
-                            System.out.print("Eleccion: ");
-                            respuestaCategoriaVehiculo = input.nextInt();
-                            System.out.println();
-                            if (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3) {
-                                System.out.println("Eleccion no valida!!");                                
-                            }                            
-                        } while (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3);  // Asegurar que el usuario ingrese un valor entre 1 y 3                                            
 
-                        switch (respuestaCategoriaVehiculo) {
-                            case 1:
-                                categoriaSeleccionada = "Economico";
-                                break;
-                            case 2:
-                                categoriaSeleccionada = "SUV";
-                                break;
-                            case 3:
-                                categoriaSeleccionada = "Pickup";
-                                break;
-                            default:
-                                System.out.println("Opcion no valida");
-                        }
+                            do {
+                                System.out.print("Eleccion: ");
+                                respuestaCategoriaVehiculo = input.nextInt();
+                                System.out.println();
+                                if (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3) {
+                                    System.out.println("Eleccion no valida!!");
+                                }
+                            } while (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3);  // Valida que el usuario ingrese un valor entre 1 y 3                                            
 
-                        for (int i = 0; i < categoria.length; i++) {
-                            if (categoria[i].equals(categoriaSeleccionada) && disponibles[i] == true) {
-                                System.out.println((i + 1) + ") " + vehiculo[i] + " - " + tarifa[i]);
-                            }  //Fin if                          
-                        }//Fin For
+                            switch (respuestaCategoriaVehiculo) {
+                                case 1:
+                                    categoriaSeleccionada = "Economico";
+                                    break;
+                                case 2:
+                                    categoriaSeleccionada = "SUV";
+                                    break;
+                                case 3:
+                                    categoriaSeleccionada = "Pickup";
+                                    break;
+                                default:
+                                    System.out.println("Opcion no valida");
+                            }
 
-                        System.out.print("\nSeleccione el vehiculo que desea alquilar: ");
-                        seleccionVehiculo = input.nextInt();
-                        posicionVehiculo = seleccionVehiculo - 1;
-                        
-                        if (posicionVehiculo >= 0 && posicionVehiculo <= vehiculo.length - 1) {
-                            if (categoria[posicionVehiculo].equals(categoriaSeleccionada) && disponibles[posicionVehiculo] == true) {
-                                System.out.println(vehiculo[posicionVehiculo]);
-                                System.out.println(categoria[posicionVehiculo]);
-                                System.out.println(tarifa[posicionVehiculo]);
-                                
-                                do {
-                                    System.out.print("Cuantos dias desea alquilar el vehiculo: ");
-                                    dias = input.nextInt();
-                                    if (dias<=0) {
-                                        System.out.println("Cantidad de dias no valida");                                        
-                                    }//Fin IF                                    
-                                } while (dias <= 0);//Fin DO/WHILE
-                                
-                                totalPagar = tarifa[posicionVehiculo] * dias;
-                                disponibles[posicionVehiculo] = false;
+                            for (int i = 0; i < categoria.length; i++) {
+                                if (categoria[i].equals(categoriaSeleccionada) && disponibles[i] == true) {
+                                    System.out.println((i + 1) + ") " + vehiculo[i] + " - " + tarifa[i]);
+                                }  //Fin if                          
+                            }//Fin For
 
-                                System.out.println("\n\nResumen del alquiler");
-                                System.out.println("=================================");
-                                System.out.printf("Cliente: %s\n", cliente[posicionCliente]);
-                                System.out.printf("Vehiculo seleccionado: %s\n", vehiculo[posicionVehiculo]);
-                                System.out.printf("Cantidad de dias: %d\n", dias);
-                                System.out.printf("Total a pagar: %.2f\n", totalPagar);
-                                System.out.println("=================================\n\n");
-                                
+                            System.out.print("\nSeleccione el vehiculo que desea alquilar: ");
+                            seleccionVehiculo = input.nextInt();
+                            posicionVehiculo = seleccionVehiculo - 1;
+
+                            if (posicionVehiculo >= 0 && posicionVehiculo <= vehiculo.length - 1) {
+                                if (categoria[posicionVehiculo].equals(categoriaSeleccionada) && disponibles[posicionVehiculo] == true) {
+                                    System.out.println(vehiculo[posicionVehiculo]);
+                                    System.out.println(categoria[posicionVehiculo]);
+                                    System.out.println(tarifa[posicionVehiculo]);
+
+                                    do {
+                                        System.out.print("Cuantos dias desea alquilar el vehiculo: ");
+                                        dias = input.nextInt();
+                                        if (dias <= 0) {
+                                            System.out.println("Cantidad de dias no valida");
+                                        }//Fin IF                                    
+                                    } while (dias <= 0);//Fin DO/WHILE
+
+                                    subtotalPagar = tarifa[posicionVehiculo] * dias;
+
+                                    //Guardar los datos del alquiler
+                                    clientesAlquiler[cantidadAlquileres] = cliente[posicionCliente];
+                                    vehiculosAlquilados[cantidadAlquileres] = vehiculo[posicionVehiculo];
+                                    diasAlquiler[cantidadAlquileres] = dias;
+                                    subtotalesAlquiler[cantidadAlquileres] = subtotalPagar;
+
+                                    //Acumular el total del cliente actual
+                                    totalPagarCliente += subtotalPagar;
+
+                                    //Aumentar la cantidad general de alquileres
+                                    cantidadAlquileres++;
+
+                                    //El vehículo deja de estar disponible
+                                    disponibles[posicionVehiculo] = false;
+
+                                    System.out.println("\nVEHICULO AGREGADO AL ALQUILER");
+                                    System.out.println("=================================");
+                                    System.out.printf("Vehiculo: %s\n", vehiculo[posicionVehiculo]);
+                                    System.out.printf("Cantidad de dias: %d\n", dias);
+                                    System.out.printf("Subtotal: %.2f\n", subtotalPagar);
+                                    System.out.println("=================================\n");
+
+                                } else {
+                                    System.out.println("El vehículo seleccionado no está disponible o no pertenece a la categoría seleccionada");
+                                }//Fin IF/ELSE                            
                             } else {
-                                System.out.println("El vehículo seleccionado no está disponible o no pertenece a la categoría seleccionada");
-                            }//Fin IF/ELSE                            
-                        } else {
-                            System.out.println("Selección de vehículo no válida");
-                        }//Fin IF/ELSE
+                                System.out.println("Selección de vehículo no válida");
+                            }//Fin IF/ELSE
+                            System.out.print("Desea Alquilar otro vehiculo: ");
+                            input.nextLine();
+                            continuar = input.nextLine().toUpperCase();
+                        } while (continuar.equals("SI"));
+                        
+                        System.out.println("\n\nRESUMEN FINAL DEL ALQUILER");
+                        System.out.println("============================================================");
+                        System.out.printf("Cliente: %s\n\n", cliente[posicionCliente]);
+                        System.out.printf("%-25s %-10s %-12s\n",
+                                "Vehiculo", "Dias", "Subtotal");
+                        System.out.println("------------------------------------------------------------");
+                        for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
+                            System.out.printf("%-25s %-10d %12.2f\n",
+                                    vehiculosAlquilados[i],
+                                    diasAlquiler[i],
+                                    subtotalesAlquiler[i]);
+                        }
+                        System.out.println("------------------------------------------------------------");
+                        System.out.printf("%-36s %12.2f\n",
+                                "TOTAL A PAGAR:", totalPagarCliente);
+                        System.out.println("============================================================\n");
+
                     }//Fin If/Else
 
                     break;
