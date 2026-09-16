@@ -99,19 +99,13 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                             mostrarVehiculosDisponibles(categoria, disponibles, categoriaSeleccionada, vehiculo, tarifa); // Llama a la funcion mostrarVehiculosDisponibles  
 
-                            posicionVehiculo = seleccionarVehiculo(input, vehiculo, categoria, categoriaSeleccionada, disponibles);
+                            posicionVehiculo = seleccionarVehiculo(input, vehiculo, categoria, categoriaSeleccionada, disponibles);//Llama a la funcion seleccionarVehiculo
 
                             System.out.println(vehiculo[posicionVehiculo]);
                             System.out.println(categoria[posicionVehiculo]);
                             System.out.println(tarifa[posicionVehiculo]);
 
-                            do {
-                                System.out.print("Cuantos dias desea alquilar el vehiculo: ");
-                                dias = input.nextInt();
-                                if (dias <= 0) {
-                                    System.out.println("Cantidad de dias no valida");
-                                }//Fin IF                                    
-                            } while (dias <= 0);//Fin DO/WHILE
+                            dias = solicitarDias(input);// Llama a la funcion solicitarDias                            
 
                             subtotalPagar = tarifa[posicionVehiculo] * dias;
 
@@ -142,22 +136,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             continuar = input.nextLine().toUpperCase();
                         } while (continuar.equals("SI"));
 
-                        System.out.println("\n\nRESUMEN FINAL DEL ALQUILER");
-                        System.out.println("============================================================");
-                        System.out.printf("Cliente: %s\n\n", cliente[posicionCliente]);
-                        System.out.printf("%-25s %-10s %-12s\n",
-                                "Vehiculo", "Dias", "Subtotal");
-                        System.out.println("------------------------------------------------------------");
-                        for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
-                            System.out.printf("%-25s %-10d %12.2f\n",
-                                    vehiculosAlquilados[i],
-                                    diasAlquiler[i],
-                                    subtotalesAlquiler[i]);
-                        }
-                        System.out.println("------------------------------------------------------------");
-                        System.out.printf("%-36s %12.2f\n",
-                                "TOTAL A PAGAR:", totalPagarCliente);
-                        System.out.println("============================================================\n");
+                        mostrarResumenAlquiler(cliente, posicionCliente, cantidadAlquileres, diasAlquiler, diasAlquiler, subtotalesAlquiler, totalPagarCliente);
 
                     }//Fin If/Else
 
@@ -181,6 +160,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
     
     public static int registrarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes, int capacidadMaxClientes) {
 
+        //Declaracion de variables temporales
         String respuestaRegistro = "";
 
         System.out.println("== REGISTRO DE CLIENTES ==");
@@ -219,16 +199,21 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
             } else {
                 break;
-            }//Fin If/Else
-        }//Fin For
+            }//Fin IF /ELSE
+
+        }//Fin FOR
 
         return cantidadClientes;
+
     }//FIn Funcion registrarCliente
 
     public static void consultarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes) {
-        System.out.println("== CONSULTA DE CLIENTES ==");
-        System.out.println("");
+        
+        //Delcaracion de variables temporales
         int posicion;
+        
+        System.out.println("== CONSULTA DE CLIENTES ==");
+        System.out.println("");        
 
         posicion = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
@@ -238,42 +223,50 @@ public class Proyecto_SistemaAlquilerVehiculos {
             System.out.println("identidad del cliente: " + identidad[posicion]);
             System.out.println("licencia del cliente: " + licencia[posicion]);
             System.out.println();
-        }
+        }//Fin IF
+        
     }//Fin Funcion consultarCliente
 
     public static int buscarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes) {
 
+        //Declaracion de variables temporales
         String valorBuscado;
         boolean valorEncontrado = false;
         int posicionClienteTem = -1;
 
-        if (cantidadClientes == 0) {            
+        if (cantidadClientes == 0) {
             System.out.println("=================================");
             System.out.println("|| NO hay clientes registrados ||");
             System.out.println("=================================");
         } else {
             System.out.print("Ingrese el numero de identidad del cliente: ");
             valorBuscado = input.nextLine();
+
             for (int i = 0; i < cantidadClientes; i++) {
+
                 if (valorBuscado.equals(identidad[i])) {
                     valorEncontrado = true;
                     posicionClienteTem = i;
                     break;
-                }//Fin if 
-            }//Fin For
+                }//Fin IF 
 
-            if (valorEncontrado == false) {                
+            }//Fin FOR
+
+            if (valorEncontrado == false) {
                 System.out.println("==========================================");
                 System.out.println("|| No se encuentra registro del cliente ||");
                 System.out.println("==========================================");
-            }//Fin If
-        }//Fin if/else
+            }//Fin IF
+
+        }//Fin IF/ELSE
+
         return posicionClienteTem;
+
     }//Fin Funcion consultarCliente
     
     public static String seleccionarCategoria(Scanner input) {
 
-        //declaracion de valariables
+        //Declaracion de valariables temporales
         int respuestaCategoriaVehiculo = 0;
         String categoriaElegida = "@";
 
@@ -288,9 +281,11 @@ public class Proyecto_SistemaAlquilerVehiculos {
             System.out.print("Eleccion: ");
             respuestaCategoriaVehiculo = input.nextInt();
             System.out.println();
+            
             if (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3) {
                 System.out.println("Eleccion no valida!!");
-            }
+            }//Fin IF
+            
         } while (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3);  // Valida que el usuario ingrese un valor entre 1 y 3                                            
 
         switch (respuestaCategoriaVehiculo) {
@@ -305,45 +300,89 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 break;
             default:
                 System.out.println("Opcion no valida");
-        }
+        }// Fin SWITCH
 
         return categoriaElegida;
+        
     }//Fin funcion SeleccionarCategoria
     
-    public static void mostrarVehiculosDisponibles(String[] categoria, boolean[] disponibles, String categoriaSeleccionada, String[] vehiculo, double[] tarifa ){        
-        
+    public static void mostrarVehiculosDisponibles(String[] categoria, boolean[] disponibles, String categoriaSeleccionada, String[] vehiculo, double[] tarifa) {
+
         for (int i = 0; i < categoria.length; i++) {
-                                if (categoria[i].equals(categoriaSeleccionada) && disponibles[i] == true) {
-                                    System.out.println((i + 1) + ") " + vehiculo[i] + " - " + tarifa[i]);
-                                }  //Fin if                          
-                            }//Fin For    
+            
+            if (categoria[i].equals(categoriaSeleccionada) && disponibles[i] == true) {
+                System.out.println((i + 1) + ") " + vehiculo[i] + " - " + tarifa[i]);
+            }  //Fin IF  
+            
+        }//Fin FOR    
+        
     }//Fin Funcion mostrarVehiculosDisponibles
     
-    public static int seleccionarVehiculo(Scanner input, String[] vehiculo, String[] categoria, String categoriaSeleccionada, boolean[] disponibles) { 
+    public static int seleccionarVehiculo(Scanner input, String[] vehiculo, String[] categoria, String categoriaSeleccionada, boolean[] disponibles) {
+        
+        //Declaracion de variables temporales
         int seleccionVehiculo = 0;
         int posicion = 0;
-        
+
         do {
             System.out.print("\nSeleccione el vehiculo que desea alquilar: ");
             seleccionVehiculo = input.nextInt();
 
             posicion = seleccionVehiculo - 1;
 
-            if (posicion < 0
-                    || posicion >= vehiculo.length
-                    || !categoria[posicion].equals(categoriaSeleccionada)
-                    || disponibles[posicion] == false) {
-
+            if (posicion < 0 || posicion >= vehiculo.length || !categoria[posicion].equals(categoriaSeleccionada) || disponibles[posicion] == false) {
                 System.out.println("Seleccion de vehiculo no valida");
-            }
+            }//Fin IF
 
-        } while (posicion < 0
-                || posicion >= vehiculo.length
-                || !categoria[posicion].equals(categoriaSeleccionada)
-                || disponibles[posicion] == false);
+        } while (posicion < 0 || posicion >= vehiculo.length || !categoria[posicion].equals(categoriaSeleccionada) || disponibles[posicion] == false);
 
         return posicion;
+
+    }//Fin funcion SeleccionarVehiculo 
     
-}//Fin funcion SeleccionarVehiculo 
+    public static int solicitarDias(Scanner input) {
+        
+        //Declaracion de variables temporales
+        int diasTem = 0;
+
+        do {
+            System.out.print("Cuantos dias desea alquilar el vehiculo: ");
+            diasTem = input.nextInt();
+            
+            if (diasTem <= 0) {
+                System.out.println("Cantidad de dias no valida");                
+            }//Fin IF 
+            
+        } while (diasTem <= 0);//Fin DO/WHILE
+        
+        return diasTem;
+        
+    }//Fin funcion 
+    
+    public static void mostrarResumenAlquiler(String[] cliente, int posicionCliente, int cantidadAlquileres, int[] vehiculosAlquilados, int[] diasAlquiler, double[] subtotalesAlquiler, double totalPagarCliente) {
+        
+        //Declaracion de variables temporales
+        int inicioAlquilerCliente = cantidadAlquileres;        
+        
+        System.out.println("\n\nRESUMEN FINAL DEL ALQUILER");
+        System.out.println("============================================================");
+        System.out.printf("Cliente: %s\n\n", cliente[posicionCliente]);
+        System.out.printf("%-25s %-10s %-12s\n",
+                "Vehiculo", "Dias", "Subtotal");
+        System.out.println("------------------------------------------------------------");
+        
+        for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
+            System.out.printf("%-25s %-10d %12.2f\n",
+                    vehiculosAlquilados[i],
+                    diasAlquiler[i],
+                    subtotalesAlquiler[i]);
+        }//FIN FOR
+        
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("%-36s %12.2f\n",
+                "TOTAL A PAGAR:", totalPagarCliente);
+        System.out.println("============================================================\n");
+        
+    }//Fin Funcion mostrarResumenAlquiler
 
 }//Fin Class
