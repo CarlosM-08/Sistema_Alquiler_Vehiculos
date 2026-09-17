@@ -55,9 +55,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
                            2. Consultar Cliente
                            3. Registrar Alquiler
                            4. Registrar Devolucion
-                           5. Consulta de Vehiculos
-                           6. Mostrar resumen general
-                           7. Salir
+                           5. Consulta de Vehiculos                           
+                           6. Salir
                            """);
 
             System.out.print("Eleccion: ");
@@ -142,15 +141,14 @@ public class Proyecto_SistemaAlquilerVehiculos {
                         
                         metodoPago = seleccionarMetodoPago(input);
 
-                        mostrarResumenAlquiler(cliente[posicionCliente], vehiculosAlquilados, diasAlquiler, subtotalesAlquiler, inicioAlquilerCliente, cantidadAlquileres, totalPagarCliente, metodoPago);
-                        
-                        
+                        mostrarResumenAlquiler(cliente[posicionCliente], vehiculosAlquilados, diasAlquiler, subtotalesAlquiler, inicioAlquilerCliente, cantidadAlquileres, totalPagarCliente, metodoPago); 
 
                     }//Fin IF/ELSE
 
                     break;
                 case 4:
-
+                    
+                    
                     break;
                 case 5:
 
@@ -213,7 +211,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
         return cantidadClientes;
 
-    }//FIn Funcion registrarCliente
+    }//Fin Funcion registrarCliente
 
     public static void consultarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes) {
         
