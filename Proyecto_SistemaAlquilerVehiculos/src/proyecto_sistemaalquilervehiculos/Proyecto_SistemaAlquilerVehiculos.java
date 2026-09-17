@@ -28,15 +28,13 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String[] identidad = new String[10];
         String[] licencia = new String[10];
         int cantidadClientes = 0;
-        int capacidadMaxClientes = 10;
-        int posicionCliente;
+        int capacidadMaxClientes = 10;        
 
         //Declaracion de variables para VEHICULOS
         String[] vehiculo = {"Toyota Corolla", "Honda Civic", "Hyundai Elantra", "Kia Rio", "Toyota RAV4", "Ford Explorer", "Honda CR-V", "Hyundai Tucson", "Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Mitsubishi L200"};
         String[] categoria = {"Economico", "Economico", "Economico", "Economico", "SUV", "SUV", "SUV", "SUV", "Pickup", "Pickup", "Pickup", "Pickup"};
         double[] tarifa = {30, 35, 32, 28, 50, 60, 52, 48, 55, 58, 53, 50};
-        boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};              
-        int posicionVehiculo = 0;
+        boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};         
 
         //variables para los ALQUILERES
         String[] clientesAlquiler = new String[12];
@@ -44,7 +42,6 @@ public class Proyecto_SistemaAlquilerVehiculos {
         int[] diasAlquiler = new int[12];
         double[] subtotalesAlquiler = new double[12];
         int cantidadAlquileres = 0;
-        int dias = 0;
 
         do {
 
@@ -82,12 +79,19 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 case 3:
+                    
                     //SECCION DE ALQUILER DE VEHICULO 
+                    
+                    //Declaracion de variables                     
                     String categoriaSeleccionada = "No asignada";
                     double totalPagarCliente = 0;
                     double subtotalPagar = 0;
                     String continuar = "NO";
                     int inicioAlquilerCliente = cantidadAlquileres;
+                    int posicionCliente;
+                    int posicionVehiculo = 0;
+                    int dias = 0;
+                    String metodoPago = "@";
 
                     posicionCliente = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
@@ -135,10 +139,14 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             input.nextLine();
                             continuar = input.nextLine().toUpperCase();
                         } while (continuar.equals("SI"));
+                        
+                        metodoPago = seleccionarMetodoPago(input);
 
-                        mostrarResumenAlquiler(cliente, posicionCliente, cantidadAlquileres, diasAlquiler, diasAlquiler, subtotalesAlquiler, totalPagarCliente);
+                        mostrarResumenAlquiler(cliente[posicionCliente], vehiculosAlquilados, diasAlquiler, subtotalesAlquiler, inicioAlquilerCliente, cantidadAlquileres, totalPagarCliente, metodoPago);
+                        
+                        
 
-                    }//Fin If/Else
+                    }//Fin IF/ELSE
 
                     break;
                 case 4:
@@ -359,14 +367,12 @@ public class Proyecto_SistemaAlquilerVehiculos {
         
     }//Fin funcion 
     
-    public static void mostrarResumenAlquiler(String[] cliente, int posicionCliente, int cantidadAlquileres, int[] vehiculosAlquilados, int[] diasAlquiler, double[] subtotalesAlquiler, double totalPagarCliente) {
-        
-        //Declaracion de variables temporales
-        int inicioAlquilerCliente = cantidadAlquileres;        
+    public static void mostrarResumenAlquiler(String nombreCliente, String[] vehiculosAlquilados, int[] diasAlquiler, double[] subtotalesAlquiler, int inicioAlquilerCliente, int cantidadAlquileres, double totalPagarCliente, String metodoPago) {
         
         System.out.println("\n\nRESUMEN FINAL DEL ALQUILER");
         System.out.println("============================================================");
-        System.out.printf("Cliente: %s\n\n", cliente[posicionCliente]);
+        System.out.printf("Cliente: %s\n", nombreCliente);
+        System.out.printf("metodo de pago: %s\n\n", metodoPago);
         System.out.printf("%-25s %-10s %-12s\n",
                 "Vehiculo", "Dias", "Subtotal");
         System.out.println("------------------------------------------------------------");
@@ -376,7 +382,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     vehiculosAlquilados[i],
                     diasAlquiler[i],
                     subtotalesAlquiler[i]);
-        }//FIN FOR
+        }//Fin FOR
         
         System.out.println("------------------------------------------------------------");
         System.out.printf("%-36s %12.2f\n",
@@ -384,5 +390,46 @@ public class Proyecto_SistemaAlquilerVehiculos {
         System.out.println("============================================================\n");
         
     }//Fin Funcion mostrarResumenAlquiler
+    
+    public static String seleccionarMetodoPago(Scanner input) {
+        
+        //Declaracion de variables temporales
+        int opcionPago = 0;
+        String metodoPago = "";
 
-}//Fin Class
+        System.out.println("""
+                       Seleccione el metodo de pago
+                       1. Efectivo
+                       2. Tarjeta
+                       3. Transferencia
+                       """);
+
+        do {
+            System.out.print("Eleccion: ");
+            opcionPago = input.nextInt();
+
+            if (opcionPago < 1 || opcionPago > 3) {
+                System.out.println("Metodo de pago no valido!!");
+            }//Fin IF
+
+        } while (opcionPago < 1 || opcionPago > 3);
+
+        switch (opcionPago) {
+            case 1:
+                metodoPago = "Efectivo";
+                break;
+
+            case 2:
+                metodoPago = "Tarjeta";
+                break;
+
+            case 3:
+                metodoPago = "Transferencia";
+                break;
+        }
+
+        return metodoPago;
+
+    }//fin Funcion seleccionarMetodoPago
+
+}//Fin CLASS
