@@ -41,6 +41,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String[] vehiculosAlquilados = new String[12];
         int[] diasAlquiler = new int[12];
         double[] subtotalesAlquiler = new double[12];
+        boolean[] alquilerActivo = new boolean[12]; 
+        int[] posicionVehiculoAlquiler = new int[12];
         int cantidadAlquileres = 0;
 
         do {
@@ -117,9 +119,11 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             vehiculosAlquilados[cantidadAlquileres] = vehiculo[posicionVehiculo];
                             diasAlquiler[cantidadAlquileres] = dias;
                             subtotalesAlquiler[cantidadAlquileres] = subtotalPagar;
+                            alquilerActivo[cantidadAlquileres] = true; 
+                            posicionVehiculoAlquiler[cantidadAlquileres] = posicionVehiculo;
 
                             //Acumular el total del cliente actual
-                            totalPagarCliente += subtotalPagar;
+                            totalPagarCliente += subtotalPagar;   
 
                             //Aumentar la cantidad general de alquileres
                             cantidadAlquileres++;
@@ -147,8 +151,89 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 case 4:
-                    
-                    
+                    //SECCION REGISTRO DE DEVOLUCION
+
+                    int posicionClienteDevolucion = 0;
+                    int seleccionAlquiler = 0;
+                    int posicionAlquiler = -1;
+                    int diasRetraso;
+                    double mora;
+                    double tarifaMora = 100.00;
+                    boolean tieneAlquileres = false;
+                    String confirmarDevolucion;
+
+                    System.out.println("\n== REGISTRO DE DEVOLUCION ==");
+                    System.out.println();
+
+                    //Buscar cliente
+                    posicionClienteDevolucion = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
+
+                    if (posicionClienteDevolucion != -1) {
+
+                        tieneAlquileres = mostrarAlquileresActivos(cliente[posicionClienteDevolucion], clientesAlquiler, vehiculosAlquilados, alquilerActivo, cantidadAlquileres);                          
+
+                        if (tieneAlquileres == true) {
+                            
+                           //Seleccionar el alquiler que se desea devolver                            
+                           posicionAlquiler = seleccionarAlquilerDevolucion(input, cliente[posicionClienteDevolucion], clientesAlquiler, alquilerActivo, cantidadAlquileres);
+                            
+                            //Solicitar dias de retraso
+                            diasRetraso = solicitarDiasRetraso(input);
+
+                            //Calcular mora
+                            mora = diasRetraso * tarifaMora;
+
+                            //Mostrar resumen antes de confirmar
+                            System.out.println("\nRESUMEN DE DEVOLUCION");
+                            System.out.println("========================================");
+                            System.out.printf("Cliente: %s\n", cliente[posicionClienteDevolucion]);
+                            System.out.printf("Vehiculo: %s\n", vehiculosAlquilados[posicionAlquiler]);
+                            System.out.printf("Dias de retraso: %d\n", diasRetraso);
+                            System.out.printf("Mora por retraso: %.2f\n", mora);
+                            System.out.println("========================================");
+
+                            //Confirmar devolucion
+                            input.nextLine();
+
+                            System.out.print("\nConfirma la devolucion? (SI/NO): ");
+                            confirmarDevolucion = input.nextLine().toUpperCase();
+
+                            if (confirmarDevolucion.equals("SI")) {
+
+                                //Cambiar estado del alquiler
+                                alquilerActivo[posicionAlquiler] = false;
+
+                                //Obtener la posicion original del vehiculo
+                                int posicionVehiculoDevuelto = posicionVehiculoAlquiler[posicionAlquiler];
+
+                                //El vehiculo vuelve a estar disponible
+                                disponibles[posicionVehiculoDevuelto] = true;
+
+                                System.out.println("\n======================================");
+                                System.out.println("DEVOLUCION REGISTRADA CORRECTAMENTE");
+                                System.out.println("======================================");
+                                System.out.printf("Vehiculo: %s\n", vehiculosAlquilados[posicionAlquiler]);
+
+                                if (mora > 0) {
+                                    System.out.printf("Total a pagar por mora: %.2f\n", mora);
+                                } else {
+                                    System.out.println("El vehiculo fue devuelto sin mora.");
+                                }//Fin IF/ELSE
+
+                                System.out.println("======================================\n");
+
+                            } else {
+
+                                System.out.println("\nLa devolucion ha sido cancelada.\n");
+                            }//FIn IF/ELSE
+
+                        } else {
+
+                            System.out.println("\nEl cliente no tiene vehiculos pendientes de devolucion.\n");
+                        }//FIn IF/ELSE
+                        
+                    }//Fin IF
+
                     break;
                 case 5:
 
@@ -396,7 +481,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String metodoPago = "";
 
         System.out.println("""
-                       Seleccione el metodo de pago
+                       \nSeleccione el metodo de pago
                        1. Efectivo
                        2. Tarjeta
                        3. Transferencia
@@ -429,5 +514,69 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return metodoPago;
 
     }//fin Funcion seleccionarMetodoPago
+    
+    public static boolean mostrarAlquileresActivos(String nombreCliente, String[] clientesAlquiler, String[] vehiculosAlquilados, boolean[] alquilerActivo, int cantidadAlquileres ) {
+
+        //Declaracion de variables temporales
+        boolean alquilerEncontrado = false;
+        
+        System.out.printf("\nCliente: %s\n", nombreCliente);
+
+        System.out.println("\nVEHICULOS ALQUILADOS");
+        System.out.println("==============================");
+
+        //Mostrar solamente los alquileres activos del cliente
+        for (int i = 0; i < cantidadAlquileres; i++) {
+
+            if (clientesAlquiler[i].equals(nombreCliente) && alquilerActivo[i] == true) {
+                System.out.printf("%d) %s\n", (i + 1), vehiculosAlquilados[i]);
+                alquilerEncontrado = true;
+            }//Fin IF
+
+        }//Fin FOR
+        
+        return alquilerEncontrado;
+    }//Fin funcion mostrarAlquileresActivos
+    
+    public static int seleccionarAlquilerDevolucion(Scanner input, String nombreCliente, String[] clientesAlquiler, boolean[] alquilerActivo, int cantidadAlquileres) {
+
+        //Declaracion de variables temporales
+        int seleccionAlquiler = 0;
+        int posicionAlquilerTem = -1;
+        
+        do {
+            System.out.print("\nSeleccione el vehiculo que desea devolver: ");
+            seleccionAlquiler = input.nextInt();
+
+            posicionAlquilerTem = seleccionAlquiler - 1;
+
+            if (posicionAlquilerTem < 0 || posicionAlquilerTem >= cantidadAlquileres || !clientesAlquiler[posicionAlquilerTem].equals(nombreCliente) || alquilerActivo[posicionAlquilerTem] == false) {
+                System.out.println("Seleccion de vehiculo no valida");
+            }//Fin IF
+
+        } while (posicionAlquilerTem < 0 || posicionAlquilerTem >= cantidadAlquileres || !clientesAlquiler[posicionAlquilerTem].equals(nombreCliente) || alquilerActivo[posicionAlquilerTem] == false);
+        
+        return posicionAlquilerTem;
+
+    }//Fin Funcion seleccionarAlquilerDevolucion
+    
+    public static int solicitarDiasRetraso(Scanner input) {
+        
+        //Declaracion de variables temporales
+        int diasRetrasoTem = 0;
+
+        do {
+            System.out.print("Ingrese la cantidad de dias de retraso: ");
+            diasRetrasoTem = input.nextInt();
+
+            if (diasRetrasoTem < 0) {
+                System.out.println(
+                        "La cantidad de dias no puede ser negativa");
+            }//Fin IF
+
+        } while (diasRetrasoTem < 0);
+        
+        return diasRetrasoTem;
+    }//FIn funcion solicitarDiasRetraso
 
 }//Fin CLASS
