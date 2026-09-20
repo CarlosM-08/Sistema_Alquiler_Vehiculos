@@ -6,6 +6,7 @@ package proyecto_sistemaalquilervehiculos;
 
 import java.util.Scanner;
 import java.time.LocalDate; //Uso de Clase LocalDate (aspecto no visto en clase)
+import java.time.temporal.ChronoUnit; //Permite calcular dias entre dos fechas (aspecto no visto en clase)
 
 /**
  *
@@ -45,6 +46,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         double[] subtotalesAlquiler = new double[12];
         boolean[] alquilerActivo = new boolean[12];
         int[] posicionVehiculoAlquiler = new int[12];
+        LocalDate[] fechasDevolucion = new LocalDate[12];
         int cantidadAlquileres = 0;
         double totalMoras = 0;
 
@@ -153,6 +155,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             subtotalesAlquiler[cantidadAlquileres] = subtotalPagar;
                             alquilerActivo[cantidadAlquileres] = true;
                             posicionVehiculoAlquiler[cantidadAlquileres] = posicionVehiculo;
+                            fechasDevolucion[cantidadAlquileres] = fechaDevolucion;
 
                             //Acumular el total del cliente actual
                             totalPagarCliente += subtotalPagar;
@@ -194,6 +197,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     double tarifaMora = 100.00;
                     boolean tieneAlquileres = false;
                     String confirmarDevolucion;
+                    LocalDate fechaActual;
 
                     System.out.println("\n== REGISTRO DE DEVOLUCION ==");
                     System.out.println();
@@ -210,8 +214,16 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             //Seleccionar el alquiler que se desea devolver                            
                             posicionAlquiler = seleccionarAlquilerDevolucion(input, cliente[posicionClienteDevolucion], clientesAlquiler, alquilerActivo, cantidadAlquileres);
 
-                            //Solicitar dias de retraso
-                            diasRetraso = solicitarDiasRetraso(input);
+                            //Obtener la fecha actual
+                            fechaActual = LocalDate.now();
+
+                            //Calcular automaticamente los dias de retraso
+                            diasRetraso = (int) ChronoUnit.DAYS.between(fechasDevolucion[posicionAlquiler], fechaActual);
+
+                            //Evitar dias negativos si el vehiculo se devuelve antes de la fecha prevista
+                            if (diasRetraso < 0) {
+                                diasRetraso = 0;
+                            }//Fin IF
 
                             //Calcular mora
                             mora = diasRetraso * tarifaMora;
@@ -221,6 +233,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             System.out.println("========================================");
                             System.out.printf("Cliente: %s\n", cliente[posicionClienteDevolucion]);
                             System.out.printf("Vehiculo: %s\n", vehiculosAlquilados[posicionAlquiler]);
+                            System.out.printf("Fecha prevista de devolucion: %s\n", fechasDevolucion[posicionAlquiler]);
+                            System.out.printf("Fecha actual: %s\n", fechaActual);
                             System.out.printf("Dias de retraso: %d\n", diasRetraso);
                             System.out.printf("Mora por retraso: %.2f\n", mora);
                             System.out.println("========================================");
@@ -465,7 +479,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
         return posicionClienteTem;
 
-    }//Fin Funcion consultarCliente
+    }//Fin Funcion buscarCliente
 
     /**
      * Esta funcion permite seleccionar la categoria del vehiculo que el cliente
@@ -636,12 +650,12 @@ public class Proyecto_SistemaAlquilerVehiculos {
         System.out.println("============================================================");
         System.out.printf("Cliente: %s\n", nombreCliente);
         System.out.printf("metodo de pago: %s\n\n", metodoPago);
-        System.out.printf("%-25s %-15s %-10s %-12s\n", "Vehiculo", "Precio/dia", "Dias", "Subtotal");
+        System.out.printf("%-25s %-15s %-10s %12s\n", "Vehiculo", "Precio/dia", "Dias", "Subtotal");
         System.out.println("------------------------------------------------------------");
 
         for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
 
-            System.out.printf("%-25s %-15.2f %-10d %-12.2f\n", vehiculosAlquilados[i], tarifa[posicionVehiculoAlquiler[i]], diasAlquiler[i], subtotalesAlquiler[i]);
+            System.out.printf("%-25s %-15.2f %-10d %12.2f\n", vehiculosAlquilados[i], tarifa[posicionVehiculoAlquiler[i]], diasAlquiler[i], subtotalesAlquiler[i]);
 
         }//Fin FOR
 
@@ -777,32 +791,6 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return posicionAlquilerTem;
 
     }//Fin Funcion seleccionarAlquilerDevolucion
-
-    /**
-     * Esta funcion solicita la cantidad de dias de retraso en la devolucion de
-     * un vehiculo. Valida que la cantidad ingresada no sea un numero negativo.
-     *
-     * @param input recibe un parametro del objeto Scanner.
-     * @return int Devuelve la cantidad de dias de retraso.
-     */
-    public static int solicitarDiasRetraso(Scanner input) {
-
-        //Declaracion de variables temporales
-        int diasRetrasoTem = 0;
-
-        do {
-            System.out.print("Ingrese la cantidad de dias de retraso: ");
-            diasRetrasoTem = input.nextInt();
-
-            if (diasRetrasoTem < 0) {
-                System.out.println(
-                        "La cantidad de dias no puede ser negativa");
-            }//Fin IF
-
-        } while (diasRetrasoTem < 0);
-
-        return diasRetrasoTem;
-    }//FIn funcion solicitarDiasRetraso
 
     /**
      * Esta funcion muestra la informacion de todos los vehiculos registrados en
