@@ -17,7 +17,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         // INICIO DEL PROYECTO
         Scanner input = new Scanner(System.in);
 
@@ -30,24 +30,23 @@ public class Proyecto_SistemaAlquilerVehiculos {
         String[] identidad = new String[10];
         String[] licencia = new String[10];
         int cantidadClientes = 0;
-        int capacidadMaxClientes = 10;        
+        int capacidadMaxClientes = 10;
 
         //Declaracion de variables para VEHICULOS
         String[] vehiculo = {"Toyota Corolla", "Honda Civic", "Hyundai Elantra", "Kia Rio", "Toyota RAV4", "Ford Explorer", "Honda CR-V", "Hyundai Tucson", "Toyota Hilux", "Ford Ranger", "Nissan Frontier", "Mitsubishi L200"};
         String[] categoria = {"Economico", "Economico", "Economico", "Economico", "SUV", "SUV", "SUV", "SUV", "Pickup", "Pickup", "Pickup", "Pickup"};
         double[] tarifa = {30, 35, 32, 28, 50, 60, 52, 48, 55, 58, 53, 50};
-        boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};         
+        boolean[] disponibles = {true, true, true, true, true, true, true, true, true, true, true, true};
 
         //variables para los ALQUILERES
         String[] clientesAlquiler = new String[12];
         String[] vehiculosAlquilados = new String[12];
         int[] diasAlquiler = new int[12];
         double[] subtotalesAlquiler = new double[12];
-        boolean[] alquilerActivo = new boolean[12]; 
+        boolean[] alquilerActivo = new boolean[12];
         int[] posicionVehiculoAlquiler = new int[12];
         int cantidadAlquileres = 0;
-        double totalMoras = 0;        
-        
+        double totalMoras = 0;
 
         do {
 
@@ -66,9 +65,25 @@ public class Proyecto_SistemaAlquilerVehiculos {
                            7. Salir
                            """);
 
-            System.out.print("Eleccion: ");
-            eleccion = input.nextInt();
-            input.nextLine();
+            do {
+                System.out.print("Eleccion: ");
+
+                if (input.hasNextInt()) {
+                    eleccion = input.nextInt();
+                    input.nextLine();
+
+                    if (eleccion < 1 || eleccion > 7) {
+                        System.out.println("Opcion no valida. Ingrese un numero entre 1 y 7.\n");
+                    }//Fin IF
+
+                } else {
+                    System.out.println("Opcion no valida. Ingrese un numero entre 1 y 7.\n");
+                    input.nextLine();
+                    eleccion = 0;
+                }//Fin IF/ELSE
+
+            } while (eleccion < 1 || eleccion > 7);
+
             System.out.println();
 
             switch (eleccion) {
@@ -85,9 +100,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 case 3:
-                    
+
                     //SECCION DE ALQUILER DE VEHICULO 
-                    
                     //Declaracion de variables                     
                     String categoriaSeleccionada = "No asignada";
                     double totalPagarCliente = 0;
@@ -98,7 +112,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     int posicionVehiculo = 0;
                     int dias = 0;
                     String metodoPago = "";
-                    
+
                     //Declaracion de variables de la clase LocalDate                    
                     LocalDate fechaAlquiler;
                     LocalDate fechaDevolucion;
@@ -108,12 +122,12 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     if (posicionCliente != -1) {
                         System.out.printf("Bienvenido %s\n", cliente[posicionCliente]);
                         do {
-                            
-                             // Llama a la funcion SeleccionarCategoria
+
+                            // Llama a la funcion SeleccionarCategoria
                             categoriaSeleccionada = seleccionarCategoria(input);
 
                             // Llama a la funcion mostrarVehiculosDisponibles
-                            mostrarVehiculosDisponibles(categoria, disponibles, categoriaSeleccionada, vehiculo, tarifa);   
+                            mostrarVehiculosDisponibles(categoria, disponibles, categoriaSeleccionada, vehiculo, tarifa);
 
                             //Llama a la funcion seleccionarVehiculo
                             posicionVehiculo = seleccionarVehiculo(input, vehiculo, categoria, categoriaSeleccionada, disponibles);
@@ -123,7 +137,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             System.out.println(tarifa[posicionVehiculo]);
 
                             dias = solicitarDias(input);// Llama a la funcion solicitarDias 
-                            
+
                             //Obtener la fecha actual del alquiler
                             fechaAlquiler = LocalDate.now();
 
@@ -137,11 +151,11 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             vehiculosAlquilados[cantidadAlquileres] = vehiculo[posicionVehiculo];
                             diasAlquiler[cantidadAlquileres] = dias;
                             subtotalesAlquiler[cantidadAlquileres] = subtotalPagar;
-                            alquilerActivo[cantidadAlquileres] = true; 
+                            alquilerActivo[cantidadAlquileres] = true;
                             posicionVehiculoAlquiler[cantidadAlquileres] = posicionVehiculo;
 
                             //Acumular el total del cliente actual
-                            totalPagarCliente += subtotalPagar;   
+                            totalPagarCliente += subtotalPagar;
 
                             //Aumentar la cantidad general de alquileres
                             cantidadAlquileres++;
@@ -162,10 +176,10 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             input.nextLine();
                             continuar = input.nextLine().toUpperCase();
                         } while (continuar.equals("SI"));
-                        
+
                         metodoPago = seleccionarMetodoPago(input);
 
-                        mostrarResumenAlquiler(cliente[posicionCliente], vehiculosAlquilados, diasAlquiler, subtotalesAlquiler, inicioAlquilerCliente, cantidadAlquileres, totalPagarCliente, metodoPago); 
+                        mostrarResumenAlquiler(cliente[posicionCliente], vehiculosAlquilados, tarifa, posicionVehiculoAlquiler, diasAlquiler, subtotalesAlquiler, inicioAlquilerCliente, cantidadAlquileres, totalPagarCliente, metodoPago);
 
                     }//Fin IF/ELSE
 
@@ -173,7 +187,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 case 4:
                     //SECCION REGISTRO DE DEVOLUCION
 
-                    int posicionClienteDevolucion = 0;                    
+                    int posicionClienteDevolucion = 0;
                     int posicionAlquiler = -1;
                     int diasRetraso;
                     double mora;
@@ -189,13 +203,13 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     if (posicionClienteDevolucion != -1) {
 
-                        tieneAlquileres = mostrarAlquileresActivos(cliente[posicionClienteDevolucion], clientesAlquiler, vehiculosAlquilados, alquilerActivo, cantidadAlquileres);                          
+                        tieneAlquileres = mostrarAlquileresActivos(cliente[posicionClienteDevolucion], clientesAlquiler, vehiculosAlquilados, alquilerActivo, cantidadAlquileres);
 
                         if (tieneAlquileres == true) {
-                            
-                           //Seleccionar el alquiler que se desea devolver                            
-                           posicionAlquiler = seleccionarAlquilerDevolucion(input, cliente[posicionClienteDevolucion], clientesAlquiler, alquilerActivo, cantidadAlquileres);
-                            
+
+                            //Seleccionar el alquiler que se desea devolver                            
+                            posicionAlquiler = seleccionarAlquilerDevolucion(input, cliente[posicionClienteDevolucion], clientesAlquiler, alquilerActivo, cantidadAlquileres);
+
                             //Solicitar dias de retraso
                             diasRetraso = solicitarDiasRetraso(input);
 
@@ -227,10 +241,9 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                                 //El vehiculo vuelve a estar disponible
                                 disponibles[posicionVehiculoDevuelto] = true;
-                                
+
                                 //Acumular el valor de la mora
                                 totalMoras += mora;
-
 
                                 System.out.println("\n======================================");
                                 System.out.println("DEVOLUCION REGISTRADA CORRECTAMENTE");
@@ -254,21 +267,21 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                             System.out.println("\nEl cliente no tiene vehiculos pendientes de devolucion.\n");
                         }//FIn IF/ELSE
-                        
+
                     }//Fin IF
 
                     break;
                 case 5:
-                    
+
                     mostrarEstadoVehiculos(vehiculo, categoria, tarifa, disponibles);
 
                     break;
                 case 6:
-                    
+
                     mostrarResumenGeneral(cantidadClientes, cantidadAlquileres, alquilerActivo, disponibles, subtotalesAlquiler, totalMoras);
-                    
+
                     break;
-                    
+
                 case 7:
 
                     //SALIR DEL SISTEMA
@@ -278,7 +291,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 default:
-                    
+
                     System.out.println("Opcion no valida");
 
             }//Fin SWITCH 
@@ -286,17 +299,23 @@ public class Proyecto_SistemaAlquilerVehiculos {
         } while (eleccion != 7);
 
     }//Fin Main
-    
+
     /**
-     * Esta funcion permite registrar los datos de nuevos clientes dentro de los arreglos correspondientes. 
-     * Al finalizar el registro, devuelve la cantidad actualizada de clientes registrados.
+     * Esta funcion permite registrar los datos de nuevos clientes dentro de los
+     * arreglos correspondientes. Valida que el cliente tenga una edad minima de
+     * 18 años para poder realizar el registro. Al finalizar el registro,
+     * devuelve la cantidad actualizada de clientes registrados.
      *
      * @param input recibe un parametro del objeto Scanner.
-     * @param cliente recibe el arreglo que almacena los nombres de los clientes.
+     * @param cliente recibe el arreglo que almacena los nombres de los
+     * clientes.
      * @param edad recibe el arreglo que almacena las edades de los clientes.
-     * @param identidad recibe el arreglo que almacena las identidades de los clientes.
-     * @param licencia recibe el arreglo que almacena las licencias de los clientes.
-     * @param cantidadClientes recibe la cantidad actual de clientes registrados.
+     * @param identidad recibe el arreglo que almacena las identidades de los
+     * clientes.
+     * @param licencia recibe el arreglo que almacena las licencias de los
+     * clientes.
+     * @param cantidadClientes recibe la cantidad actual de clientes
+     * registrados.
      * @param capacidadMaxClientes recibe la capacidad maxima de clientes.
      * @return int Devuelve la cantidad actualizada de clientes registrados.
      */
@@ -318,9 +337,17 @@ public class Proyecto_SistemaAlquilerVehiculos {
                 System.out.print("Ingrese el nombre del cliente: ");
                 cliente[i] = input.nextLine();
 
-                System.out.print("Ingrese la edad del cliente: ");
-                edad[i] = input.nextInt();
-                input.nextLine();
+                do {
+                    System.out.print("Ingrese la edad del cliente: ");
+                    edad[i] = input.nextInt();
+
+                    if (edad[i] < 18) {
+                        System.out.println("El cliente debe ser mayor de edad para alquilar un vehiculo.");
+                    }//Fin IF
+
+                } while (edad[i] < 18);
+
+                input.nextLine();//Limpieza de buffer
 
                 System.out.print("Ingrese el numero de identidad del cliente: ");
                 identidad[i] = input.nextLine();
@@ -348,25 +375,30 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return cantidadClientes;
 
     }//Fin Funcion registrarCliente
-    
+
     /**
-     * Esta funcion permite consultar la informacion de un cliente registrado en el sistema. 
-     * Utiliza la funcion buscarCliente para localizar al cliente por medio de su numero de identidad. 
-     * 
+     * Esta funcion permite consultar la informacion de un cliente registrado en
+     * el sistema. Utiliza la funcion buscarCliente para localizar al cliente
+     * por medio de su numero de identidad.
+     *
      * @param input recibe un parametro del objeto Scanner.
-     * @param cliente recibe el arreglo que almacena los nombres de los clientes.
+     * @param cliente recibe el arreglo que almacena los nombres de los
+     * clientes.
      * @param edad recibe el arreglo que almacena las edades de los clientes.
-     * @param identidad recibe el arreglo que almacena las identidades de los clientes.
-     * @param licencia recibe el arreglo que almacena las licencias de los clientes.
-     * @param cantidadClientes recibe la cantidad actual de clientes registrados.
+     * @param identidad recibe el arreglo que almacena las identidades de los
+     * clientes.
+     * @param licencia recibe el arreglo que almacena las licencias de los
+     * clientes.
+     * @param cantidadClientes recibe la cantidad actual de clientes
+     * registrados.
      */
     public static void consultarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes) {
-        
+
         //Delcaracion de variables temporales
         int posicion;
-        
+
         System.out.println("== CONSULTA DE CLIENTES ==");
-        System.out.println("");        
+        System.out.println("");
 
         posicion = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
@@ -377,20 +409,26 @@ public class Proyecto_SistemaAlquilerVehiculos {
             System.out.println("licencia del cliente: " + licencia[posicion]);
             System.out.println();
         }//Fin IF
-        
+
     }//Fin Funcion consultarCliente
-    
+
     /**
-     * Esta funcion permite buscar un cliente registrado utilizando su numero de identidad. 
-     * Recorre los registros existentes y devuelve la posicion del cliente dentro de los arreglos.
+     * Esta funcion permite buscar un cliente registrado utilizando su numero de
+     * identidad. Recorre los registros existentes y devuelve la posicion del
+     * cliente dentro de los arreglos.
      *
      * @param input recibe un parametro del objeto Scanner.
-     * @param cliente recibe el arreglo que almacena los nombres de los clientes.
+     * @param cliente recibe el arreglo que almacena los nombres de los
+     * clientes.
      * @param edad recibe el arreglo que almacena las edades de los clientes.
-     * @param identidad recibe el arreglo que almacena las identidades de los clientes.
-     * @param licencia recibe el arreglo que almacena las licencias de los clientes.
-     * @param cantidadClientes recibe la cantidad actual de clientes registrados.
-     * @return int Devuelve la posicion del cliente encontrado o -1 si no existe.
+     * @param identidad recibe el arreglo que almacena las identidades de los
+     * clientes.
+     * @param licencia recibe el arreglo que almacena las licencias de los
+     * clientes.
+     * @param cantidadClientes recibe la cantidad actual de clientes
+     * registrados.
+     * @return int Devuelve la posicion del cliente encontrado o -1 si no
+     * existe.
      */
     public static int buscarCliente(Scanner input, String[] cliente, int[] edad, String[] identidad, String[] licencia, int cantidadClientes) {
 
@@ -428,10 +466,11 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return posicionClienteTem;
 
     }//Fin Funcion consultarCliente
-    
+
     /**
-     * Esta funcion permite seleccionar la categoria del vehiculo que el cliente desea alquilar. 
-     * Valida que la opcion ingresada se encuentre entre las categorias disponibles.   
+     * Esta funcion permite seleccionar la categoria del vehiculo que el cliente
+     * desea alquilar. Valida que la opcion ingresada se encuentre entre las
+     * categorias disponibles.
      *
      * @param input recibe un parametro del objeto Scanner.
      * @return String Devuelve el nombre de la categoria seleccionada.
@@ -453,11 +492,11 @@ public class Proyecto_SistemaAlquilerVehiculos {
             System.out.print("Eleccion: ");
             respuestaCategoriaVehiculo = input.nextInt();
             System.out.println();
-            
+
             if (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3) {
                 System.out.println("Eleccion no valida!!");
             }//Fin IF
-            
+
         } while (respuestaCategoriaVehiculo < 1 || respuestaCategoriaVehiculo > 3);  // Valida que el usuario ingrese un valor entre 1 y 3                                            
 
         switch (respuestaCategoriaVehiculo) {
@@ -475,44 +514,56 @@ public class Proyecto_SistemaAlquilerVehiculos {
         }// Fin SWITCH
 
         return categoriaElegida;
-        
+
     }//Fin funcion SeleccionarCategoria
-    
+
     /**
-     * Esta funcion muestra los vehiculos que se encuentran disponibles de acuerdo con la categoria seleccionada por el cliente. 
-     * Recorre los arreglos de vehiculos y muestra solamente aquellos que pertenecen a la categoria indicada y estan disponibles.
+     * Esta funcion muestra los vehiculos que se encuentran disponibles de
+     * acuerdo con la categoria seleccionada por el cliente. Recorre los
+     * arreglos de vehiculos y muestra solamente aquellos que pertenecen a la
+     * categoria indicada y estan disponibles.
      *
-     * @param categoria recibe el arreglo que almacena las categorias de los vehiculos.
-     * @param disponibles recibe el arreglo que almacena la disponibilidad de los vehiculos.
-     * @param categoriaSeleccionada recibe la categoria seleccionada por el cliente.
-     * @param vehiculo recibe el arreglo que almacena los nombres de los vehiculos.
-     * @param tarifa recibe el arreglo que almacena las tarifas de los vehiculos.
+     * @param categoria recibe el arreglo que almacena las categorias de los
+     * vehiculos.
+     * @param disponibles recibe el arreglo que almacena la disponibilidad de
+     * los vehiculos.
+     * @param categoriaSeleccionada recibe la categoria seleccionada por el
+     * cliente.
+     * @param vehiculo recibe el arreglo que almacena los nombres de los
+     * vehiculos.
+     * @param tarifa recibe el arreglo que almacena las tarifas de los
+     * vehiculos.
      */
     public static void mostrarVehiculosDisponibles(String[] categoria, boolean[] disponibles, String categoriaSeleccionada, String[] vehiculo, double[] tarifa) {
 
         for (int i = 0; i < categoria.length; i++) {
-            
+
             if (categoria[i].equals(categoriaSeleccionada) && disponibles[i] == true) {
                 System.out.println((i + 1) + ") " + vehiculo[i] + " - " + tarifa[i]);
             }  //Fin IF  
-            
+
         }//Fin FOR    
-        
+
     }//Fin Funcion mostrarVehiculosDisponibles
-    
+
     /**
-     * Esta funcion permite seleccionar el vehiculo que el cliente desea alquilar. 
-     * Valida que el vehiculo pertenezca a la categoria seleccionada y que se encuentre disponible.
+     * Esta funcion permite seleccionar el vehiculo que el cliente desea
+     * alquilar. Valida que el vehiculo pertenezca a la categoria seleccionada y
+     * que se encuentre disponible.
      *
      * @param input recibe un parametro del objeto Scanner.
-     * @param vehiculo recibe el arreglo que almacena los nombres de los vehiculos.
-     * @param categoria recibe el arreglo que almacena las categorias de los vehiculos.
-     * @param categoriaSeleccionada recibe la categoria seleccionada por el cliente.
-     * @param disponibles recibe el arreglo que almacena la disponibilidad de los vehiculos.
+     * @param vehiculo recibe el arreglo que almacena los nombres de los
+     * vehiculos.
+     * @param categoria recibe el arreglo que almacena las categorias de los
+     * vehiculos.
+     * @param categoriaSeleccionada recibe la categoria seleccionada por el
+     * cliente.
+     * @param disponibles recibe el arreglo que almacena la disponibilidad de
+     * los vehiculos.
      * @return int Devuelve la posicion del vehiculo seleccionado.
      */
     public static int seleccionarVehiculo(Scanner input, String[] vehiculo, String[] categoria, String categoriaSeleccionada, boolean[] disponibles) {
-        
+
         //Declaracion de variables temporales
         int seleccionVehiculo = 0;
         int posicion = 0;
@@ -532,78 +583,85 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return posicion;
 
     }//Fin funcion SeleccionarVehiculo 
-    
+
     /**
-     * Esta funcion solicita la cantidad de dias que el cliente desea alquilar un vehiculo. 
-     * Valida que la cantidad ingresada sea mayor a cero.
+     * Esta funcion solicita la cantidad de dias que el cliente desea alquilar
+     * un vehiculo. Valida que la cantidad ingresada sea mayor a cero.
      *
      * @param input recibe un parametro del objeto Scanner.
      * @return int Devuelve la cantidad de dias del alquiler.
      */
     public static int solicitarDias(Scanner input) {
-        
+
         //Declaracion de variables temporales
         int diasTem = 0;
 
         do {
             System.out.print("Cuantos dias desea alquilar el vehiculo: ");
             diasTem = input.nextInt();
-            
+
             if (diasTem <= 0) {
-                System.out.println("Cantidad de dias no valida");                
+                System.out.println("Cantidad de dias no valida");
             }//Fin IF 
-            
+
         } while (diasTem <= 0);//Fin DO/WHILE
-        
+
         return diasTem;
-        
+
     }//Fin funcion 
-    
+
     /**
-     * Esta funcion muestra el resumen final del alquiler realizado por un cliente, incluyendo los vehiculos alquilados, cantidad de dias, subtotales, metodo de pago y total a pagar.
+     * Esta funcion muestra el resumen final del alquiler realizado por un
+     * cliente, incluyendo los vehiculos alquilados, cantidad de dias,
+     * subtotales, metodo de pago y total a pagar.
      *
      * @param nombreCliente recibe el nombre del cliente.
      * @param vehiculosAlquilados recibe el arreglo de vehiculos alquilados.
      * @param diasAlquiler recibe el arreglo con los dias de cada alquiler.
-     * @param subtotalesAlquiler recibe el arreglo con los subtotales de los alquileres.
-     * @param inicioAlquilerCliente recibe la posicion donde inicia el alquiler actual.
-     * @param cantidadAlquileres recibe la cantidad actual de alquileres registrados.
+     * @param subtotalesAlquiler recibe el arreglo con los subtotales de los
+     * alquileres.
+     * @param inicioAlquilerCliente recibe la posicion donde inicia el alquiler
+     * actual.
+     * @param cantidadAlquileres recibe la cantidad actual de alquileres
+     * registrados.
      * @param totalPagarCliente recibe el total que debe pagar el cliente.
      * @param metodoPago recibe el metodo de pago seleccionado.
+     * @param tarifa recibe el arreglo con las tarifas por dia de los vehiculos.
+     * @param posicionVehiculoAlquiler recibe la posicion original de cada
+     * vehiculo alquilado.
      */
-    public static void mostrarResumenAlquiler(String nombreCliente, String[] vehiculosAlquilados, int[] diasAlquiler, double[] subtotalesAlquiler, int inicioAlquilerCliente, int cantidadAlquileres, double totalPagarCliente, String metodoPago) {
-        
+    public static void mostrarResumenAlquiler(String nombreCliente, String[] vehiculosAlquilados, double[] tarifa, int[] posicionVehiculoAlquiler, int[] diasAlquiler, double[] subtotalesAlquiler, int inicioAlquilerCliente, int cantidadAlquileres, double totalPagarCliente, String metodoPago) {
+
         System.out.println("\n\nRESUMEN FINAL DEL ALQUILER");
         System.out.println("============================================================");
         System.out.printf("Cliente: %s\n", nombreCliente);
         System.out.printf("metodo de pago: %s\n\n", metodoPago);
-        System.out.printf("%-25s %-10s %-12s\n",
-                "Vehiculo", "Dias", "Subtotal");
+        System.out.printf("%-25s %-15s %-10s %-12s\n", "Vehiculo", "Precio/dia", "Dias", "Subtotal");
         System.out.println("------------------------------------------------------------");
-        
+
         for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
-            System.out.printf("%-25s %-10d %12.2f\n",
-                    vehiculosAlquilados[i],
-                    diasAlquiler[i],
-                    subtotalesAlquiler[i]);
+
+            System.out.printf("%-25s %-15.2f %-10d %12.2f\n", vehiculosAlquilados[i], tarifa[posicionVehiculoAlquiler[i]], diasAlquiler[i], subtotalesAlquiler[i]);
+
         }//Fin FOR
-        
+
         System.out.println("------------------------------------------------------------");
         System.out.printf("%-36s %12.2f\n",
                 "TOTAL A PAGAR:", totalPagarCliente);
         System.out.println("============================================================\n");
-        
+
     }//Fin Funcion mostrarResumenAlquiler
-    
+
     /**
-     * Esta funcion permite seleccionar el metodo de pago que utilizara el cliente. 
-     * Valida que la opcion ingresada corresponda a uno de los metodos de pago disponibles.
+     * Esta funcion permite seleccionar el metodo de pago que utilizara el
+     * cliente. Valida que la opcion ingresada corresponda a uno de los metodos
+     * de pago disponibles.
      *
      * @param input recibe un parametro del objeto Scanner.
      * @return String Devuelve el metodo de pago seleccionado.
      */
     public static String seleccionarMetodoPago(Scanner input) {
-        
+
         //Declaracion de variables temporales
         int opcionPago = 0;
         String metodoPago = "";
@@ -642,23 +700,28 @@ public class Proyecto_SistemaAlquilerVehiculos {
         return metodoPago;
 
     }//fin Funcion seleccionarMetodoPago
-    
+
     /**
-     * Esta funcion busca y muestra los alquileres que se encuentran activos para un cliente determinado. 
-     * Tambien identifica si el cliente posee al menos un alquiler pendiente de devolucion.
+     * Esta funcion busca y muestra los alquileres que se encuentran activos
+     * para un cliente determinado. Tambien identifica si el cliente posee al
+     * menos un alquiler pendiente de devolucion.
      *
      * @param nombreCliente recibe el nombre del cliente.
-     * @param clientesAlquiler recibe el arreglo de clientes con alquileres registrados.
+     * @param clientesAlquiler recibe el arreglo de clientes con alquileres
+     * registrados.
      * @param vehiculosAlquilados recibe el arreglo de vehiculos alquilados.
-     * @param alquilerActivo recibe el arreglo que indica el estado de cada alquiler.
-     * @param cantidadAlquileres recibe la cantidad actual de alquileres registrados.
-     * @return boolean Devuelve true si encuentra alquileres activos y false si no encuentra.
+     * @param alquilerActivo recibe el arreglo que indica el estado de cada
+     * alquiler.
+     * @param cantidadAlquileres recibe la cantidad actual de alquileres
+     * registrados.
+     * @return boolean Devuelve true si encuentra alquileres activos y false si
+     * no encuentra.
      */
-    public static boolean mostrarAlquileresActivos(String nombreCliente, String[] clientesAlquiler, String[] vehiculosAlquilados, boolean[] alquilerActivo, int cantidadAlquileres ) {
+    public static boolean mostrarAlquileresActivos(String nombreCliente, String[] clientesAlquiler, String[] vehiculosAlquilados, boolean[] alquilerActivo, int cantidadAlquileres) {
 
         //Declaracion de variables temporales
         boolean alquilerEncontrado = false;
-        
+
         System.out.printf("\nCliente: %s\n", nombreCliente);
 
         System.out.println("\nVEHICULOS ALQUILADOS");
@@ -673,27 +736,32 @@ public class Proyecto_SistemaAlquilerVehiculos {
             }//Fin IF
 
         }//Fin FOR
-        
+
         return alquilerEncontrado;
     }//Fin funcion mostrarAlquileresActivos
-    
+
     /**
      * Esta funcion permite seleccionar el alquiler que se desea devolver.
-     * Valida que el alquiler pertenezca al cliente y que se encuentre activo antes de aceptar la seleccion.
+     * Valida que el alquiler pertenezca al cliente y que se encuentre activo
+     * antes de aceptar la seleccion.
      *
      * @param input recibe un parametro del objeto Scanner.
      * @param nombreCliente recibe el nombre del cliente.
-     * @param clientesAlquiler recibe el arreglo de clientes con alquileres registrados.
-     * @param alquilerActivo recibe el arreglo que indica el estado de cada alquiler.
-     * @param cantidadAlquileres recibe la cantidad actual de alquileres registrados.
-     * @return int Devuelve la posicion del alquiler seleccionado para devolucion.
+     * @param clientesAlquiler recibe el arreglo de clientes con alquileres
+     * registrados.
+     * @param alquilerActivo recibe el arreglo que indica el estado de cada
+     * alquiler.
+     * @param cantidadAlquileres recibe la cantidad actual de alquileres
+     * registrados.
+     * @return int Devuelve la posicion del alquiler seleccionado para
+     * devolucion.
      */
     public static int seleccionarAlquilerDevolucion(Scanner input, String nombreCliente, String[] clientesAlquiler, boolean[] alquilerActivo, int cantidadAlquileres) {
 
         //Declaracion de variables temporales
         int seleccionAlquiler = 0;
         int posicionAlquilerTem = -1;
-        
+
         do {
             System.out.print("\nSeleccione el vehiculo que desea devolver: ");
             seleccionAlquiler = input.nextInt();
@@ -705,19 +773,20 @@ public class Proyecto_SistemaAlquilerVehiculos {
             }//Fin IF
 
         } while (posicionAlquilerTem < 0 || posicionAlquilerTem >= cantidadAlquileres || !clientesAlquiler[posicionAlquilerTem].equals(nombreCliente) || alquilerActivo[posicionAlquilerTem] == false);
-        
+
         return posicionAlquilerTem;
 
     }//Fin Funcion seleccionarAlquilerDevolucion
-    
+
     /**
-     * Esta funcion solicita la cantidad de dias de retraso en la devolucion de un vehiculo. Valida que la cantidad ingresada no sea un numero negativo.
+     * Esta funcion solicita la cantidad de dias de retraso en la devolucion de
+     * un vehiculo. Valida que la cantidad ingresada no sea un numero negativo.
      *
      * @param input recibe un parametro del objeto Scanner.
      * @return int Devuelve la cantidad de dias de retraso.
      */
     public static int solicitarDiasRetraso(Scanner input) {
-        
+
         //Declaracion de variables temporales
         int diasRetrasoTem = 0;
 
@@ -731,55 +800,65 @@ public class Proyecto_SistemaAlquilerVehiculos {
             }//Fin IF
 
         } while (diasRetrasoTem < 0);
-        
+
         return diasRetrasoTem;
     }//FIn funcion solicitarDiasRetraso
-    
+
     /**
-     * Esta funcion muestra la informacion de todos los vehiculos registrados en el sistema. 
-     * Presenta el nombre, categoria, tarifa y estado actual de cada vehiculo.
+     * Esta funcion muestra la informacion de todos los vehiculos registrados en
+     * el sistema. Presenta el nombre, categoria, tarifa y estado actual de cada
+     * vehiculo.
      *
-     * @param vehiculo recibe el arreglo que almacena los nombres de los vehiculos.
-     * @param categoria recibe el arreglo que almacena las categorias de los vehiculos.
-     * @param tarifa recibe el arreglo que almacena las tarifas de los vehiculos.
-     * @param disponibles recibe el arreglo que almacena la disponibilidad de los vehiculos.
+     * @param vehiculo recibe el arreglo que almacena los nombres de los
+     * vehiculos.
+     * @param categoria recibe el arreglo que almacena las categorias de los
+     * vehiculos.
+     * @param tarifa recibe el arreglo que almacena las tarifas de los
+     * vehiculos.
+     * @param disponibles recibe el arreglo que almacena la disponibilidad de
+     * los vehiculos.
      */
     public static void mostrarEstadoVehiculos(String[] vehiculo, String[] categoria, double[] tarifa, boolean[] disponibles) {
 
-    //Declaracion de variables temporales
-    String estadoVehiculoTem = "";
+        //Declaracion de variables temporales
+        String estadoVehiculoTem = "";
 
-    System.out.println("\nCONSULTA DE VEHICULOS");
-    System.out.println("==========================================================================");
-    System.out.printf("%-5s %-25s %-15s %-10s %-12s\n", "No.", "Vehiculo", "Categoria", "Tarifa", "Estado");
-    System.out.println("--------------------------------------------------------------------------");
+        System.out.println("\nCONSULTA DE VEHICULOS");
+        System.out.println("==========================================================================");
+        System.out.printf("%-5s %-25s %-15s %-10s %-12s\n", "No.", "Vehiculo", "Categoria", "Tarifa", "Estado");
+        System.out.println("--------------------------------------------------------------------------");
 
         for (int i = 0; i < vehiculo.length; i++) {
-        
-        if (disponibles[i] == true) {
-            estadoVehiculoTem = "Disponible";
-        } else {
-            estadoVehiculoTem = "Alquilado";
-        }//Fin IF/ELSE
 
-        //Mostrar informacion del vehiculo
-        System.out.printf("%-5d %-25s %-15s %-10.2f %-12s\n", (i + 1), vehiculo[i], categoria[i], tarifa[i], estadoVehiculoTem);
+            if (disponibles[i] == true) {
+                estadoVehiculoTem = "Disponible";
+            } else {
+                estadoVehiculoTem = "Alquilado";
+            }//Fin IF/ELSE
 
-    }//Fin FOR
+            //Mostrar informacion del vehiculo
+            System.out.printf("%-5d %-25s %-15s %-10.2f %-12s\n", (i + 1), vehiculo[i], categoria[i], tarifa[i], estadoVehiculoTem);
 
-    System.out.println("==========================================================================\n");
+        }//Fin FOR
 
-}//Fin Funcion mostrarEstadoVehiculos
-    
+        System.out.println("==========================================================================\n");
+
+    }//Fin Funcion mostrarEstadoVehiculos
+
     /**
-     * Esta funcion muestra un resumen general de la informacion registrada en el sistema. 
-     * Calcula la cantidad de alquileres activos, vehiculos disponibles, vehiculos alquilados, ingresos por alquileres y total acumulado por moras.
+     * Esta funcion muestra un resumen general de la informacion registrada en
+     * el sistema. Calcula la cantidad de alquileres activos, vehiculos
+     * disponibles, vehiculos alquilados, ingresos por alquileres y total
+     * acumulado por moras.
      *
      * @param cantidadClientes recibe la cantidad de clientes registrados.
      * @param cantidadAlquileres recibe la cantidad de alquileres registrados.
-     * @param alquilerActivo recibe el arreglo que indica el estado de cada alquiler.
-     * @param disponibles recibe el arreglo que indica la disponibilidad de los vehiculos.
-     * @param subtotalesAlquiler recibe el arreglo con los subtotales de los alquileres.
+     * @param alquilerActivo recibe el arreglo que indica el estado de cada
+     * alquiler.
+     * @param disponibles recibe el arreglo que indica la disponibilidad de los
+     * vehiculos.
+     * @param subtotalesAlquiler recibe el arreglo con los subtotales de los
+     * alquileres.
      * @param totalMoras recibe el total acumulado por concepto de moras.
      */
     public static void mostrarResumenGeneral(int cantidadClientes, int cantidadAlquileres, boolean[] alquilerActivo, boolean[] disponibles, double[] subtotalesAlquiler, double totalMoras) {
@@ -826,5 +905,5 @@ public class Proyecto_SistemaAlquilerVehiculos {
         System.out.println("==============================================\n");
 
     }//Fin Funcion mostrarResumenGeneral
-    
+
 }//Fin CLASS
