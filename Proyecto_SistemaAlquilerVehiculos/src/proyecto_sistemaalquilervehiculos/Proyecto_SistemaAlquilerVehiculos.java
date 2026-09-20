@@ -636,7 +636,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
         System.out.println("============================================================");
         System.out.printf("Cliente: %s\n", nombreCliente);
         System.out.printf("metodo de pago: %s\n\n", metodoPago);
-        System.out.printf("%-25s %-15s %-10s %-12s\n", "Vehiculo", "Precio/dia", "Dias", "Subtotal");
+        System.out.printf("%-25s %-15s %-10s %12s\n", "Vehiculo", "Precio/dia", "Dias", "Subtotal");
         System.out.println("------------------------------------------------------------");
 
         for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
