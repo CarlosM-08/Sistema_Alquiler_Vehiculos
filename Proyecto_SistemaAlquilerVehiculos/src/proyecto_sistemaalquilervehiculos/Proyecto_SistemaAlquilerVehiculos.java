@@ -641,7 +641,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
         for (int i = inicioAlquilerCliente; i < cantidadAlquileres; i++) {
 
-            System.out.printf("%-25s %-15.2f %-10d %12.2f\n", vehiculosAlquilados[i], tarifa[posicionVehiculoAlquiler[i]], diasAlquiler[i], subtotalesAlquiler[i]);
+            System.out.printf("%-25s %-15.2f %-10d %-12.2f\n", vehiculosAlquilados[i], tarifa[posicionVehiculoAlquiler[i]], diasAlquiler[i], subtotalesAlquiler[i]);
 
         }//Fin FOR
 
