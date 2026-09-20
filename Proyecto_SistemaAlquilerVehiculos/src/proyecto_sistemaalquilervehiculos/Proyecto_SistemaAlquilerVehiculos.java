@@ -5,6 +5,7 @@
 package proyecto_sistemaalquilervehiculos;
 
 import java.util.Scanner;
+import java.time.LocalDate; //Uso de Clase LocalDate (aspecto no visto en clase)
 
 /**
  *
@@ -16,6 +17,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         // INICIO DEL PROYECTO
         Scanner input = new Scanner(System.in);
 
@@ -44,6 +46,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
         boolean[] alquilerActivo = new boolean[12]; 
         int[] posicionVehiculoAlquiler = new int[12];
         int cantidadAlquileres = 0;
+        double totalMoras = 0;        
+        
 
         do {
 
@@ -58,7 +62,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
                            3. Registrar Alquiler
                            4. Registrar Devolucion
                            5. Consulta de Vehiculos                           
-                           6. Salir
+                           6. Mostrar Resumen General
+                           7. Salir
                            """);
 
             System.out.print("Eleccion: ");
@@ -92,25 +97,38 @@ public class Proyecto_SistemaAlquilerVehiculos {
                     int posicionCliente;
                     int posicionVehiculo = 0;
                     int dias = 0;
-                    String metodoPago = "@";
+                    String metodoPago = "";
+                    
+                    //Declaracion de variables de la clase LocalDate                    
+                    LocalDate fechaAlquiler;
+                    LocalDate fechaDevolucion;
 
                     posicionCliente = buscarCliente(input, cliente, edad, identidad, licencia, cantidadClientes);
 
                     if (posicionCliente != -1) {
                         System.out.printf("Bienvenido %s\n", cliente[posicionCliente]);
                         do {
+                            
+                             // Llama a la funcion SeleccionarCategoria
+                            categoriaSeleccionada = seleccionarCategoria(input);
 
-                            categoriaSeleccionada = seleccionarCategoria(input); // Llama a la funcion SeleccionarCategoria
+                            // Llama a la funcion mostrarVehiculosDisponibles
+                            mostrarVehiculosDisponibles(categoria, disponibles, categoriaSeleccionada, vehiculo, tarifa);   
 
-                            mostrarVehiculosDisponibles(categoria, disponibles, categoriaSeleccionada, vehiculo, tarifa); // Llama a la funcion mostrarVehiculosDisponibles  
-
-                            posicionVehiculo = seleccionarVehiculo(input, vehiculo, categoria, categoriaSeleccionada, disponibles);//Llama a la funcion seleccionarVehiculo
+                            //Llama a la funcion seleccionarVehiculo
+                            posicionVehiculo = seleccionarVehiculo(input, vehiculo, categoria, categoriaSeleccionada, disponibles);
 
                             System.out.println(vehiculo[posicionVehiculo]);
                             System.out.println(categoria[posicionVehiculo]);
                             System.out.println(tarifa[posicionVehiculo]);
 
-                            dias = solicitarDias(input);// Llama a la funcion solicitarDias                            
+                            dias = solicitarDias(input);// Llama a la funcion solicitarDias 
+                            
+                            //Obtener la fecha actual del alquiler
+                            fechaAlquiler = LocalDate.now();
+
+                            //Calcular la fecha prevista de devolucion
+                            fechaDevolucion = fechaAlquiler.plusDays(dias);
 
                             subtotalPagar = tarifa[posicionVehiculo] * dias;
 
@@ -135,6 +153,8 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             System.out.println("=================================");
                             System.out.printf("Vehiculo: %s\n", vehiculo[posicionVehiculo]);
                             System.out.printf("Cantidad de dias: %d\n", dias);
+                            System.out.printf("Fecha de alquiler: %s\n", fechaAlquiler);
+                            System.out.printf("Fecha prevista de devolucion: %s\n", fechaDevolucion);
                             System.out.printf("Subtotal: %.2f\n", subtotalPagar);
                             System.out.println("=================================\n");
 
@@ -207,6 +227,10 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                                 //El vehiculo vuelve a estar disponible
                                 disponibles[posicionVehiculoDevuelto] = true;
+                                
+                                //Acumular el valor de la mora
+                                totalMoras += mora;
+
 
                                 System.out.println("\n======================================");
                                 System.out.println("DEVOLUCION REGISTRADA CORRECTAMENTE");
@@ -224,7 +248,7 @@ public class Proyecto_SistemaAlquilerVehiculos {
                             } else {
 
                                 System.out.println("\nLa devolucion ha sido cancelada.\n");
-                            }//FIn IF/ELSE
+                            }//Fin IF/ELSE
 
                         } else {
 
@@ -240,13 +264,26 @@ public class Proyecto_SistemaAlquilerVehiculos {
 
                     break;
                 case 6:
+                    
+                    mostrarResumenGeneral(cantidadClientes, cantidadAlquileres, alquilerActivo, disponibles, subtotalesAlquiler, totalMoras);
+                    
+                    break;
+                    
+                case 7:
+
+                    //SALIR DEL SISTEMA
+                    System.out.println("======================================");
+                    System.out.println("Gracias por utilizar nuestro sistema");
+                    System.out.println("======================================");
 
                     break;
                 default:
+                    
+                    System.out.println("Opcion no valida");
 
             }//Fin SWITCH 
 
-        } while (eleccion != 6);
+        } while (eleccion != 7);
 
     }//Fin Main
     
@@ -733,5 +770,61 @@ public class Proyecto_SistemaAlquilerVehiculos {
     System.out.println("==========================================================================\n");
 
 }//Fin Funcion mostrarEstadoVehiculos
+    
+    /**
+     * Esta funcion muestra un resumen general de la informacion registrada en el sistema. 
+     * Calcula la cantidad de alquileres activos, vehiculos disponibles, vehiculos alquilados, ingresos por alquileres y total acumulado por moras.
+     *
+     * @param cantidadClientes recibe la cantidad de clientes registrados.
+     * @param cantidadAlquileres recibe la cantidad de alquileres registrados.
+     * @param alquilerActivo recibe el arreglo que indica el estado de cada alquiler.
+     * @param disponibles recibe el arreglo que indica la disponibilidad de los vehiculos.
+     * @param subtotalesAlquiler recibe el arreglo con los subtotales de los alquileres.
+     * @param totalMoras recibe el total acumulado por concepto de moras.
+     */
+    public static void mostrarResumenGeneral(int cantidadClientes, int cantidadAlquileres, boolean[] alquilerActivo, boolean[] disponibles, double[] subtotalesAlquiler, double totalMoras) {
 
+        //Declaracion de variables temporales
+        int alquileresActivosTem = 0;
+        int vehiculosDisponiblesTem = 0;
+        int vehiculosAlquiladosTem = 0;
+        double ingresosAlquileresTem = 0;
+
+        //Contar alquileres activos
+        for (int i = 0; i < cantidadAlquileres; i++) {
+
+            if (alquilerActivo[i] == true) {
+                alquileresActivosTem++;
+            }
+
+            //Acumular ingresos por alquileres
+            ingresosAlquileresTem += subtotalesAlquiler[i];
+
+        }//Fin FOR
+
+        //Contar vehiculos disponibles y alquilados
+        for (int i = 0; i < disponibles.length; i++) {
+
+            if (disponibles[i] == true) {
+                vehiculosDisponiblesTem++;
+            } else {
+                vehiculosAlquiladosTem++;
+            }//Fin IF/ELSE
+
+        }//Fin FOR
+
+        //Mostrar resumen general
+        System.out.println("\nRESUMEN GENERAL DEL SISTEMA");
+        System.out.println("==============================================");
+        System.out.printf("Clientes registrados:           %d\n", cantidadClientes);
+        System.out.printf("Alquileres registrados:         %d\n", cantidadAlquileres);
+        System.out.printf("Alquileres activos:             %d\n", alquileresActivosTem);
+        System.out.printf("Vehiculos disponibles:          %d\n", vehiculosDisponiblesTem);
+        System.out.printf("Vehiculos alquilados:           %d\n", vehiculosAlquiladosTem);
+        System.out.printf("Ingresos por alquileres:        %.2f\n", ingresosAlquileresTem);
+        System.out.printf("Total cobrado por mora:         %.2f\n", totalMoras);
+        System.out.println("==============================================\n");
+
+    }//Fin Funcion mostrarResumenGeneral
+    
 }//Fin CLASS
